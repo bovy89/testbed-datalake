@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: jaffle_shop
+    description: Raw jaffle_shop data
+    database: iceberg
+    schema: stage
+    tables:
+        - name: jaffle_shop__customers
+          description: Raw customer data
+          columns:
+            - name: _id
+              description: Primary key for customer data
+              loaded_at_field: _etl_loaded_at
+              freshness:
+                warn_after: {count: 12, period: hour}
+                error_after: {count: 24, period: hour}
+              tests:
+                - unique
+                - not_null
+
+        - name: jaffle_shop__orders
+          description: Raw order data
+          columns:
+            - name: _id
+              description: Primary key for order data
+              loaded_at_field: _etl_loaded_at
+              freshness:
+                warn_after: {count: 12, period: hour}
+                error_after: {count: 24, period: hour}
+              tests:
+                - unique
+                - not_null
+
+        - name: jaffle_shop__products
+          description: Raw products data
+          columns:
+            - name: _id
+              description: Primary key for products data
+              loaded_at_field: _etl_loaded_at
+              freshness:
+                warn_after: {count: 12, period: hour}
+                error_after: {count: 24, period: hour}
+              tests:
+                - unique
+                - not_null

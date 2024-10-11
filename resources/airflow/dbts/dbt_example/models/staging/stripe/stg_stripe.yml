@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: stg_stripe__payments
+    description: Individual payments
+    columns: 
+      - name: payment_id
+        description: Primary key for stg_stripe__payments
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Identifies order for payment (may not be unique if payment failed)
+        tests:
+          - not_null
+      - name: payment_status
+        description: "{{ doc('payment_status') }}"
+        tests:
+          - accepted_values: 
+              values:
+                - success
+                - failed

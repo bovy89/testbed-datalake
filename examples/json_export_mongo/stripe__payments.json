@@ -1,0 +1,4 @@
+{"_id":1,"orderId":1,"paymentMethod":"paypal","status":"success","amount":3056,"date":{"$date":"2024-08-28T00:00:00Z"}}
+{"_id":2,"orderId":2,"paymentMethod":"paypal","status":"success","amount":176,"date":{"$date":"2024-08-28T00:00:00Z"}}
+{"_id":3,"orderId":3,"paymentMethod":"visa","status":"failed","amount":15,"date":{"$date":"2024-08-28T00:00:00Z"}}
+{"_id":4,"orderId":3,"paymentMethod":"visa","status":"success","amount":15,"date":{"$date":"2024-08-28T00:00:00Z"}}

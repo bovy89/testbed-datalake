@@ -1,0 +1,27 @@
+# spark:
+#   target: dev
+#   outputs:
+#     dev:
+#       type: spark
+#       method: thrift
+#       host: spark
+#       port: 10009
+#       schema: bronze
+#       connect_retries: 5
+#       connect_timeout: 60
+#       retry_all: true
+
+trino:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      user: trino
+      host: trino
+      port: 8080
+      database: iceberg
+      schema: stage
+      threads: 1
+      http_scheme: http
+      session_properties:
+        query_max_run_time: 2h

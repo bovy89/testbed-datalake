@@ -1,0 +1,8 @@
+{"_id":1,"name":"scooter","description":"Small 2-wheel scooter","price":{"$numberDecimal":"3000"},"quantity":3,"manufacturer":"piaggio"}
+{"_id":2,"name":"car battery","description":"12V car battery","price":{"$numberDecimal":"28.1"},"quantity":8,"manufacturer":"varta"}
+{"_id":3,"name":"hammer 12oz","description":"12oz carpenter's hammer","price":{"$numberDecimal":"11.75"},"quantity":4,"manufacturer":"max power"}
+{"_id":4,"name":"hammer 14oz","description":"14oz carpenter's hammer","price":{"$numberDecimal":"13.75"},"quantity":5,"manufacturer":"max power"}
+{"_id":5,"name":"hammer 16oz","description":"16oz carpenter's hammer","price":{"$numberDecimal":"15.75"},"quantity":1,"manufacturer":"max power"}
+{"_id":6,"name":"rocks","description":"box of assorted rocks","price":{"$numberDecimal":"5.3"},"quantity":44,"manufacturer":"dwayne johnson"}
+{"_id":7,"name":"jacket","description":"water resistent jacket","price":{"$numberDecimal":"157.6"},"quantity":2,"manufacturer":"the north face"}
+{"_id":8,"name":"spare tire","description":"24 inch spare tire","price":{"$numberDecimal":"22.2"},"quantity":5,"manufacturer":"pirelli"}

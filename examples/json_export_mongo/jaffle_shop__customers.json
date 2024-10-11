@@ -1,0 +1,4 @@
+{"_id":1,"first_name":"Sally","last_name":"Thomas","contact":[{"type":"email","value":"sally.thomas@acme.com"},{"type":"phone","value":"+39 0000000000"}]}
+{"_id":2,"first_name":"George","last_name":"Bailey","contact":[{"type":"email","value":"gbailey@foobar.com"}]}
+{"_id":3,"first_name":"Edward","last_name":"Walker","contact":[{"type":"email","value":"ed@walker.com"}]}
+{"_id":4,"first_name":"Anne","last_name":"Kretchmar","contact":[{"type":"email","value":"annek@noanswer.org"}]}

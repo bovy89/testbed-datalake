@@ -1,0 +1,287 @@
+version: '3'
+services:
+
+  ############################
+  # minio
+  ############################
+  minio:
+    container_name: minio
+    image: minio/minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    ports:
+      - 127.0.0.1:9001:9001
+      - 127.0.0.1:9000:9000
+    command: server --address ":9000" --console-address ":9001" /data
+    restart: on-failure:5
+    networks:
+      - example.com
+    volumes:
+      - minio_storage:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  mc:
+    container_name: mc
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 admin password) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb minio/warehouse;
+      tail -f /dev/null
+      "
+    networks:
+      - example.com
+
+  ############################
+  # kerberos
+  ############################
+  kdc:
+    container_name: kdc
+    build: imgs/kdc/
+    image: kerberos-kdc:latest
+    # entrypoint: []
+    # command: tail -F anything
+    environment:
+      - KEYTABS_BASEDIR=/root/kerberos-keytabs
+    volumes:
+      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      - ./conf/kerberos/kdc.conf:/var/kerberos/krb5kdc/kdc.conf
+      - ./conf/kerberos/kadm5.acl:/var/kerberos/krb5kdc/kadm5.acl
+      - kerberos-keytabs:/root/kerberos-keytabs
+    networks:
+      - example.com
+    healthcheck:
+      test: |-
+        python -c "
+        import socket;
+        import sys;
+        a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+        result_of_check = a_socket.connect_ex(('127.0.0.1', 88));
+        sys.exit(result_of_check);
+        "
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+
+  ############################
+  # metadata store
+  ############################
+  hive-pg:
+    container_name: hive-pg
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
+    volumes:
+      - hive-pg:/data/postgres
+      - ./resources/hive-metastore/init-db-users.sql:/docker-entrypoint-initdb.d/init-db-users.sql
+    networks:
+      - example.com
+  hive-metastore:
+    container_name: hive-metastore
+    image: hive-metastore:latest
+    build: imgs/hive-metastore/
+    restart: on-failure:5
+    # entrypoint: []
+    # command: tail -F anything
+    depends_on:
+      hive-pg:
+        condition: service_started
+      minio:
+        condition: service_started
+      kdc:
+        # condition: service_healthy
+        condition: service_started
+    networks:
+      - example.com
+    environment:
+      - DB_DRIVER=postgres
+      - HADOOP_OPTS=-Dsun.security.krb5.debug=true
+      - KRB5_TRACE=/dev/stderr
+    volumes:
+      - ./conf/hive-metastore/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./conf/hive-metastore/metastore-site.xml:/opt/hive-metastore/conf/metastore-site.xml
+      - ./conf/hive-metastore/metastore-log4j2.properties:/opt/hive-metastore/conf/metastore-log4j2.properties
+      - ./secrets/certs:/opt/hive-metastore/ssl
+      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      - kerberos-keytabs:/opt/hive-metastore/keytabs
+
+  ############################
+  # trino
+  ############################
+  trino:
+    container_name: trino
+    image: trinodb/trino
+    restart: on-failure:5
+    depends_on:
+      hive-metastore:
+        condition: service_started
+      keycloak:
+        condition: service_started
+      nginx:
+        condition: service_started
+      kdc:
+        # condition: service_healthy
+        condition: service_started
+    environment:
+      - KRB5_TRACE=/dev/stderr
+    networks:
+      - example.com
+    volumes: 
+      - ./conf/trino/catalog:/etc/trino/catalog
+      - ./conf/trino/config.properties:/etc/trino/config.properties
+      - ./conf/trino/jvm.config:/etc/trino/jvm.config
+      - ./secrets/certs:/etc/trino/ssl
+      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      - kerberos-keytabs:/etc/trino/keytabs
+  trino-cli:
+    container_name: trino-cli
+    image: trinodb/trino
+    networks:
+      - example.com
+    entrypoint: []
+    command: ["tail", "-f", "/dev/null"]
+
+  ############################
+  # spark
+  ############################
+  spark-iceberg:
+    container_name: spark-iceberg
+    image: spark-iceberg:latest
+    build: imgs/spark-iceberg/
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_DAEMON_JAVA_OPTS=-Dlog4j.configuration=file:/opt/spark/conf/log4j.properties
+    networks:
+      - example.com
+    depends_on:
+      - hive-metastore
+      - minio
+    # entrypoint: []
+    # command: ["tail", "-f", "/dev/null"]
+    ports:
+      - 127.0.0.1:8061:8462
+    volumes:
+      - ./conf/spark/spark-secure-defaults.conf:/opt/spark/conf/spark-defaults.conf
+      - ./secrets/certs:/opt/spark/ssl
+      - ./conf/spark/log4j.properties:/opt/spark/conf/log4j.properties
+      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      - kerberos-keytabs:/opt/spark/keytabs
+      - ./conf/spark/core-site.xml:/opt/spark/conf/core-site.xml
+  spark-worker:
+    container_name: spark-worker
+    image: spark-iceberg:latest
+    build: imgs/spark-iceberg/
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-iceberg:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_DAEMON_JAVA_OPTS=-Dlog4j.configuration=file:/opt/spark/conf/log4j.properties
+    networks:
+      - example.com
+    depends_on:
+      - spark-iceberg
+    # entrypoint: []
+    # command: ["tail", "-f", "/dev/null"]
+    ports:
+      - 127.0.0.1:8062:8462
+    volumes:
+      - ./conf/spark/spark-secure-defaults.conf:/opt/spark/conf/spark-defaults.conf
+      - ./secrets/certs:/opt/spark/ssl
+      - ./conf/spark/log4j.properties:/opt/spark/conf/log4j.properties
+
+  ############################
+  # keycloak
+  ############################
+  keycloak-pg:
+    container_name: keycloak-pg
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: keycloak
+      PGDATA: /data/postgres
+      POSTGRES_DB: keycloak
+    volumes:
+      - keycloak-pg:/var/lib/postgresql/data
+    networks:
+      - example.com
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -p 5432
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:22.0.3
+    command: start-dev --http-enabled=true --http-port=8080 --hostname-strict=false --hostname-strict-https=false --import-realm
+    networks:
+      - example.com
+    depends_on:
+      - keycloak-pg
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HTTP_RELATIVE_PATH=/
+      - KC_METRICS_ENABLED=true
+      - KC_HEALTH_ENABLED=true
+      - KC_PROXY=edge
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=50.0 -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=keycloak-pg
+      - KC_DB_URL_PORT=5432
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=password
+      - KC_TEST_REALM_NAME=${KC_TEST_REALM_NAME}
+      - KC_TEST_ADMIN_USERNAME=${KC_TEST_ADMIN_USERNAME}
+      - KC_TEST_ADMIN_PASSWORD=${KC_TEST_ADMIN_PASSWORD}
+      - KC_TEST_DEV_USERNAME=${KC_TEST_DEV_USERNAME}
+      - KC_TEST_DEV_PASSWORD=${KC_TEST_DEV_PASSWORD}
+    volumes:
+      - ./resources/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
+    deploy:
+      resources:
+        limits:
+          memory: 1024m
+        reservations:
+          memory: 1024m
+      restart_policy:
+        condition: on-failure
+
+  ##################################
+  nginx:
+    container_name: nginx
+    image: nginx:1.19.2-alpine
+    restart: unless-stopped
+    networks:
+      - example.com
+    ports:
+      - "127.0.0.1:7777:7777"
+      - "127.0.0.1:9999:9999"
+    volumes:
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./secrets/certs:/etc/nginx/ssl
+
+networks:
+  example.com:
+    external: false
+    name: example.com
+
+volumes:
+  hive-pg:
+  minio_storage:
+  keycloak-pg:
+  kerberos-keytabs:

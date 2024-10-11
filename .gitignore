@@ -1,0 +1,7 @@
+tmp
+__pycache__
+dbt-env
+.DS_Store
+logs
+secrets
+*.zip

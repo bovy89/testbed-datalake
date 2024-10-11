@@ -1,0 +1,4 @@
+spark_default:
+  conn_type: spark
+  host: spark://spark-iceberg
+  port: 7077

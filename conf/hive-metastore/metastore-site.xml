@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>metastore.thrift.port</name>
+    <value>9083</value>
+  </property>
+  <property>
+    <name>metastore.task.threads.always</name>
+    <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask</value>
+  </property>
+  <property>
+    <name>metastore.expression.proxy</name>
+    <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.postgresql.Driver</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:postgresql://hive-pg:5432/hive</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>hive</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>hivepassword</value>
+  </property>
+  <property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>s3a://warehouse/iceberg</value>
+  </property>
+
+  <!-- SSL properties -->
+  <property>
+    <name>hive.metastore.use.SSL</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.metastore.keystore.path</name>
+    <value>/opt/hive-metastore/ssl/cert.jks</value>
+  </property>
+  <property>
+    <name>hive.metastore.keystore.password</name>
+    <value>mypassword</value>
+  </property>
+  <property>
+    <name>hive.metastore.truststore.path</name>
+    <value>/opt/hive-metastore/ssl/cert.jks</value>
+  </property>
+  <property>
+    <name>hive.metastore.truststore.password</name>
+    <value>mypassword</value>
+  </property>
+  <property>
+    <name>metastore.ssl.protocol.blacklist</name>
+    <value>SSLv2,SSLv3,TLSv1.0,TLSv1.1</value>
+  </property>
+
+  <!-- kerberos properties -->
+  <property>
+    <name>hive.metastore.sasl.enabled</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.metastore.kerberos.keytab.file</name>
+    <value>/opt/hive-metastore/keytabs/hive.keytab</value>
+  </property>
+  <property>
+    <name>hive.metastore.kerberos.principal</name>
+    <value>hive/hive-metastore.example.com@EXAMPLE.COM</value>
+  </property>
+</configuration>
