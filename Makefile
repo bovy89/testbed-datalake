@@ -28,27 +28,27 @@ debezium_logs: ## tail debezium connect logs
 
 ############################################################
 compose_cdc_build: ## CDC compose build images
-	docker compose -f docker compose.yml -f docker compose_cdc.yml build
+	docker compose -f docker-compose.yml -f docker-compose_cdc.yml build
 
 compose_cdc: ## CDC compose up
-	docker compose -f docker compose.yml -f docker compose_cdc.yml up -d
+	docker compose -f docker-compose.yml -f docker-compose_cdc.yml up -d
 
 compose_cdc_down: ## CDC compose down (without data purge)
-	docker compose -f docker compose.yml -f docker compose_cdc.yml down
+	docker compose -f docker-compose.yml -f docker-compose_cdc.yml down
 
 compose_cdc_downclean: ## CDC compose down and purge
-	docker compose -f docker compose.yml -f docker compose_cdc.yml down -v
+	docker compose -f docker-compose.yml -f docker-compose_cdc.yml down -v
 
 ############################################################
 compose_batch_build: ## Batch mode compose build images
-	docker compose -f docker compose.yml -f docker compose-airflow.yml build
+	docker compose -f docker-compose.yml -f docker-compose-airflow.yml build
 
 compose_batch: ## Batch mode compose up
-	docker compose -f docker compose.yml -f docker compose-airflow.yml up -d
+	docker compose -f docker-compose.yml -f docker-compose-airflow.yml up -d
 
 compose_batch_down: ## Batch mode compose down (without data purge)
-	docker compose -f docker compose.yml -f docker compose-airflow.yml down
+	docker compose -f docker-compose.yml -f docker-compose-airflow.yml down
 
 compose_batch_downclean: ## Batch mode compose down and purge
-	docker compose -f docker compose.yml -f docker compose-airflow.yml down -v
+	docker compose -f docker-compose.yml -f docker-compose-airflow.yml down -v
 
