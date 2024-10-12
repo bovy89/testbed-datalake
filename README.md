@@ -9,6 +9,12 @@ This testbed (*still a work-in-progress*) provides 2 main modes to retrieve data
 NOTE: the use of realtime mode for MongoDB sources is temporarily suspended due to technical/design complications of data sources. For details about the CDC demo see [here](docs/CDC.md)
 
 
+Requirements:
+- `docker`
+- `docker compose`
+- `keytool` (e.g. provided by java-1.8.0-openjdk-headless)
+- `openssl`
+
 Services access point:
 - minio UI (admin/password): http://localhost:9001/
 - airflow UI (see keycloak users credentials): http://localhost:8080
