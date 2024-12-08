@@ -59,4 +59,4 @@ show tables from gold;
 
 Clean-up:
 
-- `make compose_batch_down` or `compose_batch_downclean`
+- `make compose_batch_down` or `make compose_batch_downclean`
