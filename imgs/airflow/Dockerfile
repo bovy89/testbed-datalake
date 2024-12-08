@@ -1,4 +1,4 @@
-FROM apache/airflow:2.10.0@sha256:0bdad079614ecd800397966c8584a72ff568407554c81b7728560cee368cc637
+FROM apache/airflow:2.10.3@sha256:a297f7672778ba65d4d95cd1fee0213133ae8d8dd176fe9a697af918f945368f
 
 USER root
 
@@ -9,12 +9,11 @@ RUN apt-get update \
 && rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64/
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
 # RUN export JAVA_HOME
 
 USER airflow
 
 COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-RUN rm requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt \
+&& rm requirements.txt

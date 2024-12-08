@@ -1,13 +1,13 @@
 FROM eclipse-temurin:11-jre-alpine@sha256:eeca23b6c113f1817837d3ced7d70405db4664aade6b6f30076160e346fbbfb9
 
-ENV HADOOP_VERSION=3.3.6
 ENV HIVE_VERSION=4.0.0
 ENV POSTGRESQL_DRIVER_VERSION=42.6.0
 ENV AWS_SDK_VERSION=1.12.238
+ENV HADOOP_VERSION=3.3.4
+# questo deve combaciare con la hadoop-client-api/hadoop-client-runtime distribuita da spark
 
-
-ENV HADOOP_HOME="/opt/hadoop"
-ENV HIVE_HOME="/opt/hive-metastore"
+ENV HADOOP_HOME=/opt/hadoop
+ENV HIVE_HOME=/opt/hive-metastore
 
 WORKDIR /opt
 

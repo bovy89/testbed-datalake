@@ -1,5 +1,6 @@
-apache-airflow-providers-apache-spark==4.10.0
-dbt-core
+apache-airflow-providers-apache-spark
+apache-airflow-providers-common-compat>=1.2.2
+dbt-core==1.8.8
 dbt-trino
 trino
 airflow-dbt

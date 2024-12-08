@@ -1,4 +1,4 @@
-FROM apache/airflow:2.10.0@sha256:0bdad079614ecd800397966c8584a72ff568407554c81b7728560cee368cc637
+FROM apache/airflow:2.10.3@sha256:a297f7672778ba65d4d95cd1fee0213133ae8d8dd176fe9a697af918f945368f
 
 USER root
 
@@ -8,22 +8,23 @@ RUN apt-get update \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64/
-ENV SPARK_HOME /opt/spark
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
+ENV SPARK_HOME=/opt/spark
 
 ENV SPARK_MAJOR_VERSION=3.5
-ENV SPARK_HOTFIX_VERSION=2
+ENV SPARK_HOTFIX_VERSION=3
 ENV SCALA_VERSION=2.12
 ENV ICEBERG_VERSION=1.6.0
 ENV AWS_SDK_VERSION=1.12.238
-ENV HADOOP_VERSION=3.3.6
+ENV HADOOP_VERSION=3.3.4
+# questo deve combaciare con la hadoop-client-api/hadoop-client-runtime distribuita da spark
 
 
 # Install Apache Spark
 # https://downloads.apache.org/spark/KEYS
-ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION-bin-hadoop3.tgz \
-    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION-bin-hadoop3.tgz.asc \
-    GPG_KEY=D76E23B9F11B5BF6864613C4F7051850A0AF904D
+ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION-bin-hadoop3.tgz
+ENV SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION/spark-$SPARK_MAJOR_VERSION.$SPARK_HOTFIX_VERSION-bin-hadoop3.tgz.asc
+ENV GPG_KEY=0A2D660358B6F6F8071FD16F6606986CF5A8447C
 
 RUN mkdir -p "${SPARK_HOME}" "${SPARK_HOME}"/python "${SPARK_HOME}"/examples "${SPARK_HOME}"/work-dir "$SPARK_HOME"/iceberg/spark-events "$SPARK_HOME"/conf \
 && chmod g+w "${SPARK_HOME}"/work-dir \
@@ -90,7 +91,7 @@ RUN chown -R airflow:root "${SPARK_HOME}"
 USER airflow
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt \
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt \
 && rm requirements.txt
 
 ENV PATH="${SPARK_HOME}/sbin:${SPARK_HOME}/bin:${PATH}"
