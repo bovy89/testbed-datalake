@@ -31,12 +31,12 @@
     </property>
 
     <!-- kerberos properties -->
-    <property>
+    <!-- <property>
         <name>hadoop.security.authentication</name>
         <value>kerberos</value>
     </property>
     <property>
         <name>hadoop.security.authorization</name>
         <value>true</value>
-    </property>
+    </property> -->
 </configuration>

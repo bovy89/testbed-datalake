@@ -35,7 +35,7 @@
   </property>
 
   <!-- SSL properties -->
-  <property>
+  <!-- <property>
     <name>hive.metastore.use.SSL</name>
     <value>true</value>
   </property>
@@ -58,10 +58,10 @@
   <property>
     <name>metastore.ssl.protocol.blacklist</name>
     <value>SSLv2,SSLv3,TLSv1.0,TLSv1.1</value>
-  </property>
+  </property> -->
 
   <!-- kerberos properties -->
-  <property>
+  <!-- <property>
     <name>hive.metastore.sasl.enabled</name>
     <value>true</value>
   </property>
@@ -72,5 +72,5 @@
   <property>
     <name>hive.metastore.kerberos.principal</name>
     <value>hive/hive-metastore.example.com@EXAMPLE.COM</value>
-  </property>
+  </property> -->
 </configuration>

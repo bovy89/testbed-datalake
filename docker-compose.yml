@@ -41,34 +41,34 @@ services:
   ############################
   # kerberos
   ############################
-  kdc:
-    container_name: kdc
-    build: imgs/kdc/
-    image: kerberos-kdc:latest
-    # entrypoint: []
-    # command: tail -F anything
-    environment:
-      - KEYTABS_BASEDIR=/root/kerberos-keytabs
-    volumes:
-      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
-      - ./conf/kerberos/kdc.conf:/var/kerberos/krb5kdc/kdc.conf
-      - ./conf/kerberos/kadm5.acl:/var/kerberos/krb5kdc/kadm5.acl
-      - kerberos-keytabs:/root/kerberos-keytabs
-    networks:
-      - example.com
-    healthcheck:
-      test: |-
-        python -c "
-        import socket;
-        import sys;
-        a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-        result_of_check = a_socket.connect_ex(('127.0.0.1', 88));
-        sys.exit(result_of_check);
-        "
-      interval: 5s
-      timeout: 30s
-      retries: 50
-    restart: always
+  # kdc:
+  #   container_name: kdc
+  #   build: imgs/kdc/
+  #   image: kerberos-kdc:latest
+  #   # entrypoint: []
+  #   # command: tail -F anything
+  #   environment:
+  #     - KEYTABS_BASEDIR=/root/kerberos-keytabs
+  #   volumes:
+  #     - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+  #     - ./conf/kerberos/kdc.conf:/var/kerberos/krb5kdc/kdc.conf
+  #     - ./conf/kerberos/kadm5.acl:/var/kerberos/krb5kdc/kadm5.acl
+  #     - kerberos-keytabs:/root/kerberos-keytabs
+  #   networks:
+  #     - example.com
+  #   healthcheck:
+  #     test: |-
+  #       python -c "
+  #       import socket;
+  #       import sys;
+  #       a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+  #       result_of_check = a_socket.connect_ex(('127.0.0.1', 88));
+  #       sys.exit(result_of_check);
+  #       "
+  #     interval: 5s
+  #     timeout: 30s
+  #     retries: 50
+  #   restart: always
 
   ############################
   # metadata store
@@ -97,9 +97,9 @@ services:
         condition: service_started
       minio:
         condition: service_started
-      kdc:
-        # condition: service_healthy
-        condition: service_started
+      # kdc:
+      #   # condition: service_healthy
+      #   condition: service_started
     networks:
       - example.com
     environment:
@@ -110,9 +110,9 @@ services:
       - ./conf/hive-metastore/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./conf/hive-metastore/metastore-site.xml:/opt/hive-metastore/conf/metastore-site.xml
       - ./conf/hive-metastore/metastore-log4j2.properties:/opt/hive-metastore/conf/metastore-log4j2.properties
-      - ./secrets/certs:/opt/hive-metastore/ssl
-      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
-      - kerberos-keytabs:/opt/hive-metastore/keytabs
+      # - ./secrets/certs:/opt/hive-metastore/ssl
+      # - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      # - kerberos-keytabs:/opt/hive-metastore/keytabs
 
   ############################
   # trino
@@ -128,9 +128,9 @@ services:
         condition: service_started
       nginx:
         condition: service_started
-      kdc:
-        # condition: service_healthy
-        condition: service_started
+      # kdc:
+      #   # condition: service_healthy
+      #   condition: service_started
     environment:
       - KRB5_TRACE=/dev/stderr
     networks:
@@ -139,9 +139,9 @@ services:
       - ./conf/trino/catalog:/etc/trino/catalog
       - ./conf/trino/config.properties:/etc/trino/config.properties
       - ./conf/trino/jvm.config:/etc/trino/jvm.config
-      - ./secrets/certs:/etc/trino/ssl
-      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
-      - kerberos-keytabs:/etc/trino/keytabs
+      # - ./secrets/certs:/etc/trino/ssl
+      # - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      # - kerberos-keytabs:/etc/trino/keytabs
   trino-cli:
     container_name: trino-cli
     image: trinodb/trino
@@ -174,9 +174,9 @@ services:
       - ./conf/spark/spark-secure-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./secrets/certs:/opt/spark/ssl
       - ./conf/spark/log4j.properties:/opt/spark/conf/log4j.properties
-      - ./conf/kerberos/krb5.conf:/etc/krb5.conf
-      - kerberos-keytabs:/opt/spark/keytabs
-      - ./conf/spark/core-site.xml:/opt/spark/conf/core-site.xml
+      # - ./conf/kerberos/krb5.conf:/etc/krb5.conf
+      # - kerberos-keytabs:/opt/spark/keytabs
+      # - ./conf/spark/core-site.xml:/opt/spark/conf/core-site.xml
   spark-worker:
     container_name: spark-worker
     image: spark-iceberg:latest
