@@ -9,7 +9,7 @@ from airflow.decorators import dag, task
     start_date=datetime(2024, 1, 1),
     schedule=None,
 )
-def load_prodotti():
+def example_static_load():
     @task.pyspark(conn_id="spark_default")
     def create_database(spark: SparkSession, sc: SparkContext):
         spark.sql("CREATE DATABASE IF NOT EXISTS test")
@@ -29,4 +29,4 @@ def load_prodotti():
 
     create_database() >> load_data() >> [describe_table(), check_table_content()]
 
-dag = load_prodotti()
+dag = example_static_load()
