@@ -138,7 +138,7 @@ services:
     entrypoint: ["/usr/bin/mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27017", "--setParameter", "authenticationMechanisms=SCRAM-SHA-256"]
     restart: on-failure:5
     ports:
-      - "37017:27017"
+      - "127.0.0.1:37017:27017"
     networks:
       - example.com
     healthcheck:
