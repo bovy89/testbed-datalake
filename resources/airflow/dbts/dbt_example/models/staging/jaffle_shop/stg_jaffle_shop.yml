@@ -6,7 +6,7 @@ models:
     columns: 
       - name: customer_id
         description: Primary key for stg_jaffle_shop__customers
-        tests:
+        data_tests:
           - unique
           - not_null
 
@@ -14,18 +14,18 @@ models:
     columns:
       - name: order_id
         description: Primary key for stg_jaffle_shop__orders
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: customer_id
         description: Key to identify purchasing customer
-        tests:
+        data_tests:
           - relationships:
               to: ref('stg_jaffle_shop__customers')
               field: customer_id
       - name: order_status
         description: '{{ doc("order_status")}}'
-        tests:
+        data_tests:
           - accepted_values: 
               values:
                 - shipped
@@ -38,6 +38,6 @@ models:
     columns:
       - name: product_id
         description: Primary key for stg_jaffle_shop__products
-        tests:
+        data_tests:
           - unique
           - not_null

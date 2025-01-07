@@ -4,3 +4,4 @@ dbt-core==1.8.8
 dbt-trino
 trino
 airflow-dbt
+apache-airflow-providers-amazon

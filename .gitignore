@@ -5,3 +5,4 @@ dbt-env
 logs
 secrets
 *.zip
+conf/trino/ldap.properties

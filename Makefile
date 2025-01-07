@@ -11,8 +11,9 @@ help: ## show help message
 create_secrets: ## create TLS certificates
 	./create_secrets.sh
 
-trino_shell: ## spawn trino shell
-	docker exec -it trino-cli /bin/trino --server trino:8080 --catalog iceberg --schema default
+trino_shell: ## spawn trino shell using ldap credentials
+	@read -p "Enter Vault LDAP username: " username; \
+	docker exec -it trino-cli /bin/trino --server https://nginx:9999 --insecure --catalog iceberg --schema default --user $$username --password
 
 airflow_shell: ## spawn airflow shell
 	docker exec -it airflow-scheduler /bin/bash

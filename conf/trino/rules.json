@@ -1,0 +1,86 @@
+{
+  "catalogs": [
+    {
+      "group": "sysinfo-ops",
+      "catalog": "iceberg",
+      "allow": "all"
+    },
+    {
+      "group": "dbt-users",
+      "catalog": "iceberg",
+      "allow": "all"
+    },
+    {
+      "group": "sysinfo-dev",
+      "catalog": "iceberg",
+      "allow": "read-only"
+    },
+    {
+      "catalog": "system",
+      "allow": "read-only"
+    }
+  ],
+  "schemas": [
+    {
+      "group": "sysinfo-ops",
+      "schema": ".*",
+      "owner": true
+    }
+  ],
+  "tables": [
+    {
+      "group": "sysinfo-ops",
+      "catalog": "iceberg",
+      "privileges": [
+        "SELECT",
+        "INSERT",
+        "DELETE",
+        "UPDATE",
+        "OWNERSHIP",
+        "GRANT_SELECT"
+      ]
+    },
+    {
+      "group": "dbt-users",
+      "catalog": "iceberg",
+      "schema": "bronze|silver|gold",
+      "privileges": [
+        "SELECT",
+        "INSERT",
+        "DELETE",
+        "UPDATE",
+        "OWNERSHIP"
+      ]
+    },
+    {
+      "catalog": "system",
+      "privileges": [
+        "SELECT"
+      ]
+    },
+    {
+      "group": "sysinfo-dev",
+      "catalog": "iceberg",
+      "schema": "bronze|silver|gold",
+      "privileges": [
+        "SELECT"
+      ]
+    },
+    {
+      "group": "dbt-users",
+      "catalog": ".*",
+      "schema": ".*",
+      "table": ".*",
+      "privileges": [
+      ]
+    },
+    {
+      "group": "sysinfo-dev",
+      "catalog": ".*",
+      "schema": ".*",
+      "table": ".*",
+      "privileges": [
+      ]
+    }
+  ]
+}

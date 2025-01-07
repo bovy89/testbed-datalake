@@ -4,18 +4,18 @@ sources:
   - name: stripe
     description: Raw stripe data
     database: iceberg
-    schema: stage
+    schema: bronze
     tables:
         - name: stripe__payments
           columns: 
             - name: _id
-              tests:
+              data_tests:
                 - not_null
             - name: orderId
-              tests:
+              data_tests:
                 - not_null
             - name: status
-              tests:
+              data_tests:
                 - not_null
           loaded_at_field: _batched_at
           freshness:

@@ -32,7 +32,7 @@ services:
     entrypoint: >
       /bin/sh -c "
       until (/usr/bin/mc config host add minio http://minio:9000 admin password) do echo '...waiting...' && sleep 1; done;
-      /usr/bin/mc mb minio/warehouse;
+      /usr/bin/mc mb minio/warehouse; /usr/bin/mc mb minio/airflow; /usr/bin/mc mb minio/landing;
       tail -f /dev/null
       "
     networks:
@@ -139,6 +139,13 @@ services:
       - ./conf/trino/catalog:/etc/trino/catalog
       - ./conf/trino/config.properties:/etc/trino/config.properties
       - ./conf/trino/jvm.config:/etc/trino/jvm.config
+      - ./conf/trino/access-control.properties:/etc/trino/access-control.properties
+      - ./conf/trino/rules.json:/etc/trino/rules.json
+      - ./conf/trino/log.properties:/etc/trino/log.properties
+      - ./conf/trino/group-provider.properties:/etc/trino/group-provider.properties
+      - ./conf/trino/groups.txt:/etc/trino/groups.txt
+      - ./conf/trino/ldap.properties:/etc/trino/ldap.properties
+
       # - ./secrets/certs:/etc/trino/ssl
       # - ./conf/kerberos/krb5.conf:/etc/krb5.conf
       # - kerberos-keytabs:/etc/trino/keytabs

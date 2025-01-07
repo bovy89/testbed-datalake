@@ -6,16 +6,16 @@ models:
     columns: 
       - name: payment_id
         description: Primary key for stg_stripe__payments
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: order_id
         description: Identifies order for payment (may not be unique if payment failed)
-        tests:
+        data_tests:
           - not_null
       - name: payment_status
         description: "{{ doc('payment_status') }}"
-        tests:
+        data_tests:
           - accepted_values: 
               values:
                 - success

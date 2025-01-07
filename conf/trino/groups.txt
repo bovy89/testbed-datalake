@@ -1,0 +1,3 @@
+sysinfo-ops:sysinfoadmin,bovina
+sysinfo-dev:sysinfodev
+dbt-users: dbt

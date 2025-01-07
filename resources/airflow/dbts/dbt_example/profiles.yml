@@ -1,27 +1,32 @@
-# spark:
-#   target: dev
-#   outputs:
-#     dev:
-#       type: spark
-#       method: thrift
-#       host: spark
-#       port: 10009
-#       schema: bronze
-#       connect_retries: 5
-#       connect_timeout: 60
-#       retry_all: true
-
 trino:
   target: dev
   outputs:
     dev:
       type: trino
-      user: trino
-      host: trino
-      port: 8080
+      method: ldap
+      user: dbt
+      password: CHANGEME
+      host: CHANGEME
+      port: 9999
       database: iceberg
-      schema: stage
+      schema: bronze
       threads: 1
-      http_scheme: http
+      http_scheme: https
       session_properties:
         query_max_run_time: 2h
+
+
+# trino:
+#   target: dev
+#   outputs:
+#     dev:
+#       type: trino
+#       host: nginx
+#       port: 9999
+#       method: oauth_console
+#       database: iceberg
+#       schema: bronze
+#       threads: 1
+#       http_scheme: https
+#       session_properties:
+#         query_max_run_time: 2h

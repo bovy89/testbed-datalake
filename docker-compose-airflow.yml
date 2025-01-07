@@ -75,6 +75,12 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: Europe/Rome
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Rome
 
+    AIRFLOW__LOGGING__REMOTE_LOGGING: true
+    AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://airflow/logs
+    AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: s3_default
+    AIRFLOW__LOGGING__DELETE_LOCAL_LOGS: true
+    AIRFLOW__LOGGING__ENCRYPT_S3_LOGS: false
+
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
@@ -95,6 +101,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
     - ${AIRFLOW_PROJ_DIR:-.}/include:/include
     - ./conf/spark/spark-job-secure-defaults.conf:/opt/spark/conf/spark-defaults.conf
+    - ./conf/airflow/webserver_config.py:/opt/airflow/webserver_config.py
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -158,8 +165,6 @@ services:
         condition: service_completed_successfully
     networks:
       - example.com
-    volumes:
-      - ./conf/airflow/webserver_config.py:/opt/airflow/webserver_config.py
     
   airflow-scheduler:
     <<: *airflow-common

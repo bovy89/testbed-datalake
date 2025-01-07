@@ -14,6 +14,17 @@ Requirements:
 - `docker compose`
 - `keytool` (e.g. provided by java-1.8.0-openjdk-headless)
 - `openssl`
+- Create trino LDAP properties file (`./conf/trino/ldap.properties`). Example::
+```
+password-authenticator.name=ldap
+ldap.url=CHANGEME
+ldap.bind-dn=CHANGEME
+ldap.bind-password=CHANGEME
+ldap.group-auth-pattern=(|(&(objectClass=inetOrgPerson)(uid=${USER}))(&(objectClass=orgServices)(cn=${USER})))
+ldap.user-base-dn=CHANGEME
+```
+- Set DBT LDAP credentials in `profile.yml` (`./resources/airflow/dbts/dbt_example/profiles.yml`)
+
 
 Services access point:
 - minio UI (admin/password): http://localhost:9001/
@@ -35,8 +46,8 @@ Setup (batch mode):
 - `make create_secrets`
 - `make compose_batch_build`
 - `make compose_batch`
-- upload files from `examples/json_export_mongo` into bucket "warehouse"
-- using airflow, exec `load_jaffle_shop_dynamic`
+- upload files from `examples/json_export_mongo` into bucket "landing/mongodb"
+- using airflow, exec `load_mongo_json`
 - `make airflow_shell`, then `cd /opt/airflow/dbts/dbt_example && dbt run`
 - `make trino_shell`
 - verify data:
@@ -48,7 +59,7 @@ show schemas;
  gold
  information_schema
  silver
- stage
+ bronze
 
 show tables from gold;
      Table
