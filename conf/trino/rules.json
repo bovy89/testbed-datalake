@@ -43,7 +43,15 @@
     {
       "group": "dbt-users",
       "catalog": "iceberg",
-      "schema": "bronze|silver|gold",
+      "schema": "bronze",
+      "privileges": [
+        "SELECT"
+      ]
+    },
+    {
+      "group": "dbt-users",
+      "catalog": "iceberg",
+      "schema": "silver|gold",
       "privileges": [
         "SELECT",
         "INSERT",
