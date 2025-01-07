@@ -4,9 +4,9 @@ trino:
     dev:
       type: trino
       method: ldap
-      user: dbt
+      user: CHANGEME
       password: CHANGEME
-      host: CHANGEME
+      host: nginx
       port: 9999
       database: iceberg
       schema: bronze
