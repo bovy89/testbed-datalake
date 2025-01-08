@@ -14,6 +14,7 @@ Requirements:
 - `docker compose`
 - `keytool` (e.g. provided by java-1.8.0-openjdk-headless)
 - `openssl`
+- Add `127.0.0.1 nginx` to `/etc/hosts`
 - Create trino LDAP properties file (`./conf/trino/ldap.properties`). Example::
 ```
 password-authenticator.name=ldap
@@ -42,22 +43,27 @@ Services access point:
 Keycloak users credentials: see [here](.env##keycloak-users)
 
 
+<!-- ssh -L 9001:localhost:9001 -L 8080:localhost:8080 -L 7777:localhost:7777 <user>>@<remote_host> -->
+
+
 Setup (batch mode):
 - `make create_secrets`
 - `make compose_batch_build`
 - `make compose_batch`
+- `make trino_shell` (login as admin):
+```
+create schema silver;
+create schema gold;
+```
 - upload files from `examples/json_export_mongo` into bucket "landing/mongodb"
 - using airflow, exec `load_mongo_json`
 - `make airflow_shell`, then `cd /opt/airflow/dbts/dbt_example && dbt run`
-- `make trino_shell`
-- verify data:
+- `make trino_shell` (login as non-admin user)
 ```
 show schemas;
        Schema
 --------------------
- default
  gold
- information_schema
  silver
  bronze
 
