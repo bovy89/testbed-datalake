@@ -57,7 +57,12 @@ create schema gold;
 ```
 - upload files from `examples/json_export_mongo` into bucket "landing/mongodb"
 - using airflow, exec `load_mongo_json`
-- `make airflow_shell`, then `cd /opt/airflow/dbts/dbt_example && dbt run`
+- `make airflow_shell`, then:
+```
+export DBT_ENV_SECRET_DBT_USER=<CHANGEME>
+export DBT_ENV_SECRET_DBT_PASSWORD=<CHANGEME>
+cd /opt/airflow/dbts/dbt_example && dbt run
+```
 - `make trino_shell` (login as non-admin user)
 ```
 show schemas;
