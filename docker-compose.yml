@@ -119,7 +119,7 @@ services:
   ############################
   trino:
     container_name: trino
-    image: trinodb/trino
+    image: trinodb/trino:454
     restart: on-failure:5
     depends_on:
       hive-metastore:
@@ -151,7 +151,7 @@ services:
       # - kerberos-keytabs:/etc/trino/keytabs
   trino-cli:
     container_name: trino-cli
-    image: trinodb/trino
+    image: trinodb/trino:454
     networks:
       - example.com
     entrypoint: []
