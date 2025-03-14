@@ -30,10 +30,12 @@ def load_mongo_json():
         src_filename_noext = Path(src_filename).stem
         table_ref = f"{DATABASE_NAME}.{src_filename_noext}"
 
+        #spark.conf.set('spark.sql.caseSensitive', True)
         json_df = spark.read.json(src_file_path)
         json_df.writeTo(table_ref).createOrReplace()
         spark.sql(f"DESCRIBE TABLE {table_ref}").show(truncate=False)
         spark.sql(f"SELECT * FROM {table_ref} LIMIT 5").show()
+        #spark.conf.set('spark.sql.caseSensitive', False)
 
     @task.pyspark(conn_id="spark_default")
     def check_tables(spark: SparkSession, sc: SparkContext):

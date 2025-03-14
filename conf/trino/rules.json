@@ -11,6 +11,11 @@
       "allow": "all"
     },
     {
+      "group": "etl-users",
+      "catalog": "iceberg",
+      "allow": "read-only"
+    },
+    {
       "group": "sysinfo-dev",
       "catalog": "iceberg",
       "allow": "read-only"
@@ -67,6 +72,14 @@
       ]
     },
     {
+      "group": "etl-users",
+      "catalog": "iceberg",
+      "schema": "bronze|silver|gold",
+      "privileges": [
+        "SELECT"
+      ]
+    },
+    {
       "group": "sysinfo-dev",
       "catalog": "iceberg",
       "schema": "bronze|silver|gold",
@@ -76,6 +89,14 @@
     },
     {
       "group": "dbt-users",
+      "catalog": ".*",
+      "schema": ".*",
+      "table": ".*",
+      "privileges": [
+      ]
+    },
+    {
+      "group": "etl-users",
       "catalog": ".*",
       "schema": ".*",
       "table": ".*",

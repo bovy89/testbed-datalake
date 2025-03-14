@@ -1,3 +1,4 @@
 sysinfo-ops:sysinfoadmin,bovina
-sysinfo-dev:sysinfodev
+sysinfo-dev:sysinfodev,cgalli,tangelini
 dbt-users: dbt
+etl-users: etl

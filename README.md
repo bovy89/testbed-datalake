@@ -21,7 +21,7 @@ password-authenticator.name=ldap
 ldap.url=CHANGEME
 ldap.bind-dn=CHANGEME
 ldap.bind-password=CHANGEME
-ldap.group-auth-pattern=(|(&(objectClass=inetOrgPerson)(uid=${USER}))(&(objectClass=orgServices)(cn=${USER})))
+ldap.group-auth-pattern=(|(&(objectClass=infnAccount)(uid=${USER}))(&(objectClass=orgServices)(cn=${USER})))
 ldap.user-base-dn=CHANGEME
 ```
 - Set DBT LDAP credentials in `profile.yml` (`./resources/airflow/dbts/dbt_example/profiles.yml`)
@@ -43,7 +43,7 @@ Services access point:
 Keycloak users credentials: see [here](.env##keycloak-users)
 
 
-<!-- ssh -L 9001:localhost:9001 -L 8080:localhost:8080 -L 7777:localhost:7777 <user>>@<remote_host> -->
+<!-- ssh -L 9001:localhost:9001 -L 8080:localhost:8080 -L 7777:localhost:7777 -L 8061:localhost:8061 -L 8062:localhost:8062 <user>@<remote_host> -->
 
 
 Setup (batch mode):
